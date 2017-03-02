@@ -6,9 +6,6 @@
  */
 
 module.exports = {
-
-  attributes: {
-
-  }
+    connection: 'localMongoServer',
+    attributes: {}
 };
-
