@@ -7,5 +7,27 @@
 
 module.exports = {
     connection: 'localMongoServer',
-    attributes: {}
+    attributes: {
+        email: {
+            type: 'string'
+        },
+        username: {
+            type: 'string'
+        },
+        encryptedPassword: {
+            type: 'string'
+        },
+        gravatarURL: {
+            type: 'string'
+        },
+        deleted: {
+            type: 'boolean'
+        },
+        admin: {
+            type: 'boolean'
+        },
+        banned: {
+            type: 'boolean'
+        }
+    }
 };
