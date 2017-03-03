@@ -11,12 +11,14 @@ module.exports = {
     attributes: {
         email: {
             type: 'string',
-            email: 'true',
-            unique: 'true'
+            email: true,
+            unique: true,
+            required: true
         },
         username: {
             type: 'string',
-            unique: 'true'
+            unique: true,
+            required: true
         },
         encryptedPassword: {
             type: 'string'
