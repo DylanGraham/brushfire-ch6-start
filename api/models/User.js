@@ -9,10 +9,13 @@ module.exports = {
     connection: 'localMongoServer',
     attributes: {
         email: {
-            type: 'string'
+            type: 'string',
+            email: 'true',
+            unique: 'true'
         },
         username: {
-            type: 'string'
+            type: 'string',
+            unique: 'true'
         },
         encryptedPassword: {
             type: 'string'
