@@ -36,7 +36,7 @@ module.exports = {
             type: 'boolean'
         },
 
-        toJSON: () => {
+        toJSON: function () {
             const modelAttributes = this.toObject();
             delete modelAttributes.password;
             delete modelAttributes.confirmation;
