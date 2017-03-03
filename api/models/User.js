@@ -32,6 +32,14 @@ module.exports = {
         },
         banned: {
             type: 'boolean'
+        },
+
+        toJSON: () => {
+            const modelAttributes = this.toObject();
+            delete modelAttributes.password;
+            delete modelAttributes.confirmation;
+            delete modelAttributes.encryptedPassword;
+            return modelAttributes;
         }
     }
 };
