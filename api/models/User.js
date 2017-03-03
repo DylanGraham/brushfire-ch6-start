@@ -7,6 +7,7 @@
 
 module.exports = {
     connection: 'localMongoServer',
+    migrate: 'drop',
     attributes: {
         email: {
             type: 'string',
