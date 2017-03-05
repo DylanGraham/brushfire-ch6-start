@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing users
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const Emailaddresses = require('machinepack-emailaddresses');
 
 module.exports = {
     signup: function(req, res) {
@@ -38,14 +39,30 @@ module.exports = {
             return res.badRequest('Invalid username: must consist of numbers and letters only.');
         }
 
-        // build up the user into a dictionary
-        const options = {
-            email: req.param('email'),
-            username: req.param('username'),
-            password: req.param('password')
-        };
+        // Determine whether or not the provided string is an email address.
+        Emailaddresses.validate({
+            string: req.param('email'),
+        }).exec({
+            // An unexpected error occurred.
+            error: err => {
+                return res.serverError(err);
+            },
+            // The provided string is not an email address.
+            invalid: () => {
+                return res.badRequest('Doesn\'t look like an email address to me!');
+            },
+            // OK.
+            success: () => {
+                // build up the user into a dictionary
+                const options = {
+                    email: req.param('email'),
+                    username: req.param('username'),
+                    password: req.param('password')
+                };
 
-        // respond with the new user dictionary
-        return res.json(options);
+                // respond with the new user dictionary
+                return res.json(options);
+            },
+        });
     }
 };
