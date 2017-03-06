@@ -9,6 +9,7 @@ var Passwords = require('machinepack-passwords');
 var Gravatar = require('machinepack-gravatar');
 
 module.exports = {
+
     signup: function (req, res) {
 
         // email is required
@@ -99,11 +100,35 @@ module.exports = {
                             }
 
                             return res.json(createdUser);
-
                         });
                     }
                 });
             }
+        });
+    },
+
+    profile: function (req, res) {
+
+        User.findOne(req.param('id')).exec(function foundUser(err, user) {
+
+            if (err) return res.negotiate(err);
+
+            // Handle no user being found
+            if (!user) return res.notFound();
+
+            // Build up user options
+            var options = {
+                email: user.email,
+                username: user.username,
+                gravatarURL: user.gravatarURL,
+                deleted: user.deleted,
+                admin: user.admin,
+                banned: user.banned,
+                id: user.id
+            };
+
+            // Return the user
+            return res.json(user);
         });
     }
 };
