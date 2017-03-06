@@ -20,7 +20,7 @@ module.exports.bootstrap = function (cb) {
         // If there's at least one log the number to the console.
         if (numVideos > 0) {
             console.log('Existing video records: ', numVideos)
-            return cb();
+            return createTestUsers();
         }
 
         // Add machinepack-youtube as a depedency
