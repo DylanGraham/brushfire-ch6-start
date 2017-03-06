@@ -4,8 +4,9 @@
  * @description :: Server-side logic for managing users
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-const Emailaddresses = require('machinepack-emailaddresses');
-const Passwords = require('machinepack-passwords');
+var Emailaddresses = require('machinepack-emailaddresses');
+var Passwords = require('machinepack-passwords');
+var Gravatar = require('machinepack-gravatar');
 
 module.exports = {
     signup: function(req, res) {
@@ -54,7 +55,7 @@ module.exports = {
             },
             // OK.
             success: function() {
-
+                // Encrypt the password
                 Passwords.encryptPassword({
                     password: req.param('password'),
                 }).exec({
@@ -64,7 +65,24 @@ module.exports = {
                     },
 
                     success: function(result) {
-                        return res.json(result);
+                        try {
+                            // Create Gravatar URL
+                            var gravatarURL = Gravatar.getImageUrl({
+                                emailAddress: req.param('email'),
+                            }).execSync();
+                        } catch(err) {
+                            return res.serverError(err);
+                        }
+
+                        // Build up options dictionary
+                        var options = {
+                            email: req.param('email'),
+                            username: req.param('username'),
+                            encryptedPassword: result,
+                            gravatarURL: gravatarURL
+                        };
+
+                        return res.json(options);
                     }
                 });
             }
