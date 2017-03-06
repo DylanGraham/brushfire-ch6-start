@@ -5,6 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 const Emailaddresses = require('machinepack-emailaddresses');
+const Passwords = require('machinepack-passwords');
 
 module.exports = {
     signup: function(req, res) {
@@ -44,25 +45,29 @@ module.exports = {
             string: req.param('email'),
         }).exec({
             // An unexpected error occurred.
-            error: err => {
+            error: function(err) {
                 return res.serverError(err);
             },
             // The provided string is not an email address.
-            invalid: () => {
+            invalid: function() {
                 return res.badRequest('Doesn\'t look like an email address to me!');
             },
             // OK.
-            success: () => {
-                // build up the user into a dictionary
-                const options = {
-                    email: req.param('email'),
-                    username: req.param('username'),
-                    password: req.param('password')
-                };
+            success: function() {
 
-                // respond with the new user dictionary
-                return res.json(options);
-            },
+                Passwords.encryptPassword({
+                    password: req.param('password'),
+                }).exec({
+
+                    error: function(err) {
+                        return res.serverError(err);
+                    },
+
+                    success: function(result) {
+                        return res.json(result);
+                    }
+                });
+            }
         });
     }
 };
