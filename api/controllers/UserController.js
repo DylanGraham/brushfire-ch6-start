@@ -9,7 +9,7 @@ var Passwords = require('machinepack-passwords');
 var Gravatar = require('machinepack-gravatar');
 
 module.exports = {
-    signup: function(req, res) {
+    signup: function (req, res) {
 
         // email is required
         if (_.isUndefined(req.param('email'))) {
@@ -46,35 +46,35 @@ module.exports = {
             string: req.param('email'),
         }).exec({
             // An unexpected error occurred.
-            error: function(err) {
+            error: function (err) {
                 return res.serverError(err);
             },
             // The provided string is not an email address.
-            invalid: function() {
+            invalid: function () {
                 return res.badRequest('Doesn\'t look like an email address to me!');
             },
             // OK.
-            success: function() {
+            success: function () {
                 // Encrypt the password
                 Passwords.encryptPassword({
                     password: req.param('password'),
                 }).exec({
 
-                    error: function(err) {
+                    error: function (err) {
                         return res.serverError(err);
                     },
 
-                    success: function(result) {
+                    success: function (result) {
                         try {
                             // Create Gravatar URL
                             var gravatarURL = Gravatar.getImageUrl({
                                 emailAddress: req.param('email'),
                             }).execSync();
-                        } catch(err) {
+                        } catch (err) {
                             return res.serverError(err);
                         }
 
-                        // Build up options dictionary
+                        // Build up options
                         var options = {
                             email: req.param('email'),
                             username: req.param('username'),
@@ -82,7 +82,24 @@ module.exports = {
                             gravatarURL: gravatarURL
                         };
 
-                        return res.json(options);
+                        User.create(options).exec(function (err, createdUser) {
+                            if (err) {
+
+                                if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
+
+                                    return res.send(409, 'Email address is already taken by another user, please try again.');
+                                }
+
+                                if (err.invalidAttributes && err.invalidAttributes.username && err.invalidAttributes.username[0] && err.invalidAttributes.username[0].rule === 'unique') {
+
+                                    return res.send(409, 'Username is already taken by another user, please try again.');
+                                }
+
+                                return res.negotiate(err);
+                            }
+
+                            return res.json(createdUser);
+                        });
                     }
                 });
             }
