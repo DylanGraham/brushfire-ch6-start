@@ -24,6 +24,7 @@
     "machinepack-gravatar": "^1.2.0",
     "machinepack-passwords": "^2.3.0",
     "machinepack-youtube": "^2.2.0",
+    "passport": "^0.3.2",
     "rc": "1.0.1",
     "sails": "~0.12.1",
     "sails-disk": "~0.10.9",
