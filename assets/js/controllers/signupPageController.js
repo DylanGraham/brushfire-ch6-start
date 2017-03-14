@@ -1,49 +1,49 @@
-angular.module('brushfire').controller('signupPageController', ['$scope', '$http', 'toastr', function($scope, $http, toastr){
+angular.module('brushfire').controller('signupPageController', ['$scope', '$http', 'toastr', function ($scope, $http, toastr) {
 
-  // set-up loading state
-  $scope.signupForm = {
-    loading: false
-  };
+    // set-up loading state
+    $scope.signupForm = {
+        loading: false
+    };
 
-  $scope.submitSignupForm = function(){
+    $scope.submitSignupForm = function () {
 
-    // Set the loading state (i.e. show loading spinner)
-    $scope.signupForm.loading = true;
+        // Set the loading state (i.e. show loading spinner)
+        $scope.signupForm.loading = true;
 
-    // Submit a POST request to Sails. [The signup action has been created.]
-    $http.post('/user/signup', {
-      email: $scope.signupForm.email,
-      username: $scope.signupForm.username.replace(/\s+/g, '-'),
-      password: $scope.signupForm.password
-    })
-    .then(function onSuccess(sailsResponse){
+        // Submit a POST request to Sails. [The signup action has been created.]
+        $http.post('/user/signup', {
+            email: $scope.signupForm.email,
+            username: $scope.signupForm.username.replace(/\s+/g, '-'),
+            password: $scope.signupForm.password
+        })
+            .then(function onSuccess(sailsResponse) {
 
-      // Redirect to the profile page [This is after we have a profile page built]
-      window.location = '#/profile/' + sailsResponse.data.id;
+                // Redirect to the profile page [This is after we have a profile page built]
+                window.location = '#/profile/' + sailsResponse.data.id;
 
-      // Redirect to the user blueprint record [This is before we have the profile page built]
-      // window.location = '/user/' + sailsResponse.data.id;
-    })
-    .catch(function onError(sailsResponse){
+                // Redirect to the user blueprint record [This is before we have the profile page built]
+                // window.location = '/user/' + sailsResponse.data.id;
+            })
+            .catch(function onError(sailsResponse) {
 
-    // Handle known error type(s).
-    if (sailsResponse.status == 409) {
-      toastr.error(sailsResponse.data);
-      // $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (sailsResponse.data || sailsResponse.status);
-      return;
-    }
+                // Handle known error type(s).
+                if (sailsResponse.status == 409) {
+                    toastr.error(sailsResponse.data);
+                    // $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (sailsResponse.data || sailsResponse.status);
+                    return;
+                }
 
-    if (sailsResponse.data.invalidAttributes) {
-      $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (JSON.stringify(sailsResponse.data.invalidAttributes));
-      return;
-    }
+                if (sailsResponse.data.invalidAttributes) {
+                    $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (JSON.stringify(sailsResponse.data.invalidAttributes));
+                    return;
+                }
 
-    // Handle unknown error type(s).
-    $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (sailsResponse.data || sailsResponse.status);
+                // Handle unknown error type(s).
+                $scope.signupForm.errorMsg = 'An unexpected error occurred: ' + (sailsResponse.data || sailsResponse.status);
 
-    })
-    .finally(function eitherWay(){
-      $scope.signupForm.loading = false;
-    });
-  };
+            })
+            .finally(function eitherWay() {
+                $scope.signupForm.loading = false;
+            });
+    };
 }]);

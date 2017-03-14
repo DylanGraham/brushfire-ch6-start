@@ -1,1 +1,2 @@
-angular.module('brushfire').controller('homePageController', [ function(){}]);
+angular.module('brushfire').controller('homePageController', [function () {
+}]);
